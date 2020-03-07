@@ -87,6 +87,7 @@ UavcanServers::UavcanServers(uavcan::INode &main_node) :
 	_param_opcode_client(_subnode),
 	_param_restartnode_client(_subnode),
 	_beep_pub(_subnode),
+	_rgb_pub(_subnode),
 	_enumeration_indication_sub(_subnode),
 	_enumeration_client(_subnode),
 	_enumeration_getset_client(_subnode),
@@ -561,6 +562,8 @@ UavcanServers::run(pthread_addr_t)
 			_command_ack_pub.publish(ack);
 		}
 
+		rgb();
+
 		// Shut down once armed
 		// TODO (elsewhere): start up again once disarmed?
 		if (armed_sub.updated()) {
@@ -799,6 +802,68 @@ UavcanServers::beep(float frequency)
 	cmd.frequency = frequency;
 	cmd.duration = 0.1F;              // We don't want to incapacitate ESC for longer time that this
 	(void)_beep_pub.broadcast(cmd);
+}
+
+void
+UavcanServers::rgb(void)
+{
+	LedControlData led_control_data;
+
+	if (_led_controller.update(led_control_data) == 1) {
+		float _brightness;
+		uint8_t _r = 0, _g = 0, _b = 0;
+
+		switch (led_control_data.leds[0].color) {
+		case led_control_s::COLOR_RED:
+			_r = 255; _g = 0; _b = 0;
+			break;
+
+		case led_control_s::COLOR_GREEN:
+			_r = 0; _g = 255; _b = 0;
+			break;
+
+		case led_control_s::COLOR_BLUE:
+			_r = 0; _g = 0; _b = 255;
+			break;
+
+		case led_control_s::COLOR_AMBER: //make it the same as yellow
+		case led_control_s::COLOR_YELLOW:
+			_r = 255; _g = 255; _b = 0;
+			break;
+
+		case led_control_s::COLOR_PURPLE:
+			_r = 255; _g = 0; _b = 255;
+			break;
+
+		case led_control_s::COLOR_CYAN:
+			_r = 0; _g = 255; _b = 255;
+			break;
+
+		case led_control_s::COLOR_WHITE:
+			_r = 255; _g = 255; _b = 255;
+			break;
+
+		default:
+			_r = 0; _g = 0; _b = 0;
+			break;
+		}
+
+		_brightness = (float)led_control_data.leds[0].brightness / 255.f;
+		_r = _r * _brightness;
+		_g = _g * _brightness;
+		_b = _b * _brightness;
+
+		uavcan::equipment::indication::LightsCommand msg;
+		uavcan::equipment::indication::SingleLightCommand cmd;
+
+		cmd.light_id = 0;
+		cmd.color.red = _r >> 3;
+		cmd.color.green = _g >> 2;
+		cmd.color.blue = _b >> 3;
+		msg.commands.push_back(cmd);
+
+		(void)_rgb_pub.broadcast(msg);
+	}
 }
 
 void

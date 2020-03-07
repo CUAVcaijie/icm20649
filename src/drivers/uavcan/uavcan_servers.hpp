@@ -57,9 +57,12 @@
 #include <uavcan_posix/firmware_version_checker.hpp>
 #include <uavcan/equipment/esc/RawCommand.hpp>
 #include <uavcan/equipment/indication/BeepCommand.hpp>
+#include <uavcan/equipment/indication/LightsCommand.hpp>
+
 #include <uavcan/protocol/enumeration/Begin.hpp>
 #include <uavcan/protocol/enumeration/Indication.hpp>
 
+#include <lib/led/led.h>
 #include "uavcan_module.hpp"
 #include "uavcan_virtual_can_driver.hpp"
 
@@ -161,6 +164,7 @@ private:
 	uint8_t _param_save_opcode = 0;
 
 	bool _cmd_in_progress = false;
+	LedController		_led_controller;
 
 	// uORB topic handle for MAVLink parameter responses
 	uORB::Publication<uavcan_parameter_value_s> _param_response_pub{ORB_ID(uavcan_parameter_value)};
@@ -192,7 +196,7 @@ private:
 	bool are_node_params_dirty(uint8_t node_id) const { return bool((_param_dirty_bitmap[node_id >> 5] >> (node_id & 31)) & 1); }
 
 	void beep(float frequency);
-
+	void rgb(void);
 	bool _mutex_inited = false;
 	volatile bool _check_fw = false;
 
@@ -214,6 +218,7 @@ private:
 	void cb_enumeration_save(const uavcan::ServiceCallResult<uavcan::protocol::param::ExecuteOpcode> &result);
 
 	uavcan::Publisher<uavcan::equipment::indication::BeepCommand> _beep_pub;
+	uavcan::Publisher<uavcan::equipment::indication::LightsCommand> _rgb_pub;
 	uavcan::Subscriber<uavcan::protocol::enumeration::Indication, EnumerationIndicationCallback>
 	_enumeration_indication_sub;
 	uavcan::ServiceClient<uavcan::protocol::enumeration::Begin, EnumerationBeginCallback> _enumeration_client;
