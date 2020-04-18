@@ -2,7 +2,7 @@
 px4_add_board(
 	PLATFORM nuttx
 	VENDOR cuav
-	MODEL nora
+	MODEL x7
 	LABEL default
 	TOOLCHAIN arm-none-eabi
 	ARCHITECTURE cortex-m7
@@ -34,12 +34,14 @@ px4_add_board(
 		imu/mpu6000
 		imu/icm20948
 		imu/mpu9250
+		imu/invensense/icm20689
+		imu/invensense/icm20649
+
 		irlock
 		lights/blinkm
 		lights/rgbled
 		lights/rgbled_ncp5623c
-
-
+		lights/rgbled_pwm
 		magnetometer # all available magnetometer drivers
 		mkblctrl
 		optical_flow # all available optical flow drivers

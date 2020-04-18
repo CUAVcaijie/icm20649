@@ -1,14 +1,13 @@
 #!/bin/sh
 #
-# Cuav Nora specific board sensors init
+# Cuav X7 specific board sensors init
 #------------------------------------------------------------------------------
 adc start
 
 # Internal SPI bus ICM-20689
 mpu6000 -R 8 -s -T 20689 start
 #icm20948 -R start
-
-icm20649 -s start
+icm20649 -R 8 -s start
 # Internal SPI bus BMI088 accel
 bmi088 -A -s -R 10 start
 # Internal SPI bus BMI088 gyro
@@ -27,4 +26,3 @@ ist8310 -I start
 
 # Baro on internal SPI
 ms5611 -s start
-
