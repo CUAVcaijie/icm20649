@@ -6,7 +6,6 @@
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db"
             },
-            "compileCommands": "${workspaceFolder}/.vscode/compile_commands.json",
             "compilerPath": "/usr/bin/g++",
             "configurationProvider": "ms-vscode.cmake-tools",
             "cppStandard": "c++14",
@@ -20,7 +19,6 @@
             ],
             "includePath": [
                 "${workspaceFolder}/boards/px4/sitl/src",
-                "${workspaceFolder}/build/px4_sitl_default",
                 "${workspaceFolder}/platforms/common/include",
                 "${workspaceFolder}/platforms/posix/include",
                 "${workspaceFolder}/platforms/posix/src/px4/common/include",

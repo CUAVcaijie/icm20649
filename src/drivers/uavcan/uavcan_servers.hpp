@@ -196,7 +196,6 @@ private:
 	bool are_node_params_dirty(uint8_t node_id) const { return bool((_param_dirty_bitmap[node_id >> 5] >> (node_id & 31)) & 1); }
 
 	void beep(float frequency);
-	void rgb(void);
 	bool _mutex_inited = false;
 	volatile bool _check_fw = false;
 
@@ -218,7 +217,6 @@ private:
 	void cb_enumeration_save(const uavcan::ServiceCallResult<uavcan::protocol::param::ExecuteOpcode> &result);
 
 	uavcan::Publisher<uavcan::equipment::indication::BeepCommand> _beep_pub;
-	uavcan::Publisher<uavcan::equipment::indication::LightsCommand> _rgb_pub;
 	uavcan::Subscriber<uavcan::protocol::enumeration::Indication, EnumerationIndicationCallback>
 	_enumeration_indication_sub;
 	uavcan::ServiceClient<uavcan::protocol::enumeration::Begin, EnumerationBeginCallback> _enumeration_client;
