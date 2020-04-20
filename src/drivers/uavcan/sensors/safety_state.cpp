@@ -67,6 +67,7 @@ UavcanUavcanSafetyState::init()
 		_timer.setCallback(TimerCbBinder(this, &UavcanUavcanSafetyState::periodic_update));
 		_timer.startPeriodic(uavcan::MonotonicDuration::fromMSec(1000 / MAX_RATE_HZ));
 	}
+
 	return 0;
 }
 
@@ -77,12 +78,14 @@ UavcanUavcanSafetyState::periodic_update(const uavcan::TimerEvent &)
 		_actuator_armed_sub.copy(&_actuator_armed);
 
 		com::hex::equipment::indication::SafetyStateCommand cmd;
-		if(_actuator_armed.prearmed == true) {
+
+		if (_actuator_armed.prearmed == true) {
 			cmd.status = 255;
-		}
-		else {
+
+		} else {
 			cmd.status = 0;
 		}
+
 		(void)_safety_state_pub.broadcast(cmd);
 	}
 }

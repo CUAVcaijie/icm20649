@@ -65,6 +65,7 @@ UavcanUavcanRgb::init()
 		_timer.setCallback(TimerCbBinder(this, &UavcanUavcanRgb::periodic_update));
 		_timer.startPeriodic(uavcan::MonotonicDuration::fromMSec(1000 / MAX_RATE_HZ));
 	}
+
 	return 0;
 }
 
